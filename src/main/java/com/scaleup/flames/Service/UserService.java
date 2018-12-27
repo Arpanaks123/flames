@@ -1,4 +1,5 @@
 package com.scaleup.flames.Service;
 
-public class UserService {
+public interface UserService {
+
 }
