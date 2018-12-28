@@ -7,6 +7,8 @@ import com.scaleup.flames.domain.User;
 import com.scaleup.flames.utils.CookieAuthenticationUtils;
 import com.scaleup.flames.utils.RegionUtils;
 import com.scaleup.flames.utils.ResponseEntityCreator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,28 +23,26 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 @RestController
 public class RegisterController {
 
+    String name;
+    private static final Logger logger = LoggerFactory.getLogger(RegisterController.class);
+
     @Autowired
     RegisterService registerService;
 
     @ResponseBody
     @RequestMapping(value = "/user/registration/{email}", method = POST)
-    public ResponseEntity<?> registerWithEmail(@PathVariable String email, @RequestBody(required = true) User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public ResponseEntity<?> registerWithEmail(@PathVariable String email) throws IllegalAccessException {
 
-//        User existing = registerService.userWithEmail(email);
-//        if (existing != null)
-//            return ResponseEntityCreator.error(response, AppErrorMessage.USER_ALREADY_REGISTERED, "email");
-
+        Object existing = registerService.userWithEmail(email);
+        if (existing != null)
+            throw new IllegalAccessException("User already exists!!");
         try {
-
-            // String region = (String) request.getAttribute(RegionUtils.REGION_PARAM_NAME);
-            String userId = registerService.registerAccount(user);
-            //CookieAuthenticationUtils.addAuthenticationCookie(response, userId);
-
+            registerService.registerAccount(email);
             return ResponseEntityCreator.success();
-
-        } catch (UserAlreadyRegisteredException e) {
-            return ResponseEntityCreator.error(response, AppErrorMessage.USER_ALREADY_REGISTERED, "email");
+        } catch(Exception e){
+            logger.info("Error occurred while registration..", e.getMessage());
         }
+            return null;
     }
 
     @ResponseBody
@@ -58,9 +58,9 @@ public class RegisterController {
         try {
 
             String region = (String) request.getAttribute(RegionUtils.REGION_PARAM_NAME);
-            String userId = registerService.registerAccount(user);
+            //registerService.registerAccount(user);
 
-            CookieAuthenticationUtils.addAuthenticationCookie(response, userId);
+            CookieAuthenticationUtils.addAuthenticationCookie(response, null);
 
             return ResponseEntityCreator.success();
 
