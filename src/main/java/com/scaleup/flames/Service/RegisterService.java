@@ -9,5 +9,5 @@ public interface RegisterService {
 
     User userWithMobile(String mobile);
 
-    String registerAccount(String mobile, String referrerId, String accessType, String region);
+    String registerAccount(User user);
 }
