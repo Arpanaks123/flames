@@ -29,7 +29,6 @@ public class RegisterController {
     @Autowired
     RegisterService registerService;
 
-    @ResponseBody
     @RequestMapping(value = "/user/registration/{email}", method = POST)
     public ResponseEntity<?> registerWithEmail(@PathVariable String email) throws IllegalAccessException {
 
@@ -39,34 +38,17 @@ public class RegisterController {
         try {
             registerService.registerAccount(email);
             return ResponseEntityCreator.success();
-        } catch(Exception e){
+        } catch (Exception e) {
             logger.info("Error occurred while registration..", e.getMessage());
         }
-            return null;
+        return null;
     }
 
     @ResponseBody
-    @RequestMapping(value = "/user/registration/{mobile}/", method = GET)
-    public ResponseEntity<?> registerwithMobile(@PathVariable String mobile,
-                                                @RequestBody(required = true) User user, HttpServletRequest request,
-                                                HttpServletResponse response) throws IOException {
+    @RequestMapping(value = "/user/profile/{uuid}", method = POST)
+    public ResponseEntity<?> registerwithMobile(@PathVariable String uuid, @RequestBody(required = true) User user){
 
-        User existing = registerService.userWithMobile(mobile);
-        if (existing != null)
-            return ResponseEntityCreator.error(response, AppErrorMessage.USER_ALREADY_REGISTERED, "mobile");
-
-        try {
-
-            String region = (String) request.getAttribute(RegionUtils.REGION_PARAM_NAME);
-            //registerService.registerAccount(user);
-
-            CookieAuthenticationUtils.addAuthenticationCookie(response, null);
-
-            return ResponseEntityCreator.success();
-
-        } catch (UserAlreadyRegisteredException e) {
-            return ResponseEntityCreator.error(response, AppErrorMessage.USER_ALREADY_REGISTERED, "mobile");
-        }
+        registerService.editProfile(uuid, user);
+        return null;
     }
-
 }

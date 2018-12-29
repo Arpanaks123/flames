@@ -24,12 +24,6 @@ public class Application {
     @Value("${solr.my.url}")
     private String solrUrl;
 
-    @Value("${solr.user.collection-name}")
-    private String solrCollectionname;
-
-    @Value("${solr.timeout-ms}")
-    private int solrTimeoutMs;
-
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }

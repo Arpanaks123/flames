@@ -10,4 +10,6 @@ public interface RegisterService {
     User userWithMobile(String mobile);
 
     void registerAccount(String email);
+
+    User editProfile(String uuid, User user);
 }
