@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -44,6 +45,7 @@ public class RegisterController {
         return null;
     }
 
+    @PreAuthorize("hasRole('ROLE_USER')")
     @ResponseBody
     @RequestMapping(value = "/user/profile/{uuid}", method = POST)
     public ResponseEntity<?> registerwithMobile(@PathVariable String uuid, @RequestBody(required = true) User user){
